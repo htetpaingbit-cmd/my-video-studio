@@ -5,16 +5,16 @@ import os
 import re
 import tempfile
 import time
-import imageio_ffmpeg  # <--- ဒါလေး ထည့်ထားပြီးပါပြီ
 
-# ------------------------------------------------------
-# Website ရဲ့ အခြေခံ Settings များ
-# ------------------------------------------------------
 st.set_page_config(page_title="All-in-One Video Studio", page_icon="🎬", layout="centered")
 
+# Cloud ပေါ်မှာဆိုရင် 'ffmpeg' ကိုပဲ တိုက်ရိုက်သုံးမယ်
 def get_ffmpeg_path():
     if os.path.exists('ffmpeg.exe'):
         return 'ffmpeg.exe'
+    return 'ffmpeg'
+
+# ... (အောက်က ကုဒ်အပိုင်းများကို ယခင်အတိုင်း ထားထားပါ) ...
     try:
         # Cloud ပေါ်တွင် imageio_ffmpeg မှတစ်ဆင့် FFmpeg လမ်းကြောင်းကို ယူမည်
         return imageio_ffmpeg.get_ffmpeg_exe()
