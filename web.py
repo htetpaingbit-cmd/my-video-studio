@@ -6,20 +6,15 @@ import re
 import tempfile
 import time
 
+# ------------------------------------------------------
+# Website ရဲ့ အခြေခံ Settings များ
+# ------------------------------------------------------
 st.set_page_config(page_title="All-in-One Video Studio", page_icon="🎬", layout="centered")
 
-# Cloud ပေါ်မှာဆိုရင် 'ffmpeg' ကိုပဲ တိုက်ရိုက်သုံးမယ်
 def get_ffmpeg_path():
     if os.path.exists('ffmpeg.exe'):
         return 'ffmpeg.exe'
     return 'ffmpeg'
-
-# ... (အောက်က ကုဒ်အပိုင်းများကို ယခင်အတိုင်း ထားထားပါ) ...
-    try:
-        # Cloud ပေါ်တွင် imageio_ffmpeg မှတစ်ဆင့် FFmpeg လမ်းကြောင်းကို ယူမည်
-        return imageio_ffmpeg.get_ffmpeg_exe()
-    except Exception:
-        return 'ffmpeg'
 
 def get_video_duration(input_file):
     try:
@@ -49,7 +44,6 @@ with tab1:
     
     col1, col2, col3 = st.columns(3)
     with col1:
-        # Key သတ်မှတ်ထားသည်
         target_mb = st.number_input("Target Size (MB)", min_value=1, value=50, key="comp_size")
     with col2:
         resolution = st.selectbox("Resolution", ["Original", "1080p", "720p", "640p", "540p", "480p", "360p"], key="comp_res")
@@ -58,13 +52,11 @@ with tab1:
 
     if uploaded_file is not None:
         if st.button("🚀 Compress စတင်မည်", use_container_width=True, key="comp_btn"):
-            # Temp ဖိုင်များ ဖန်တီးခြင်း
             temp_dir = tempfile.mkdtemp()
             input_path = os.path.join(temp_dir, uploaded_file.name)
             output_name = f"Compressed_{target_mb}MB.{out_format}"
             output_path = os.path.join(temp_dir, output_name)
 
-            # Upload လုပ်ထားသော ဖိုင်ကို သိမ်းဆည်းခြင်း
             with open(input_path, "wb") as f:
                 f.write(uploaded_file.getbuffer())
 
@@ -90,12 +82,10 @@ with tab1:
                         '-bufsize', f'{int(video_bitrate * 2)}k', '-preset', 'fast', '-c:a', 'aac', '-b:a', '96k'
                     ] + scale_filter + [output_path]
 
-                # Progress ပြသရန် နေရာများ
                 progress_bar = st.progress(0.0)
                 status_text = st.empty()
                 status_text.info("ပြင်ဆင်နေပါသည်...")
 
-                # FFmpeg Run ခြင်း (Progress သိနိုင်ရန် Popen သုံးခြင်း)
                 try:
                     process = subprocess.Popen(command, stderr=subprocess.PIPE, stdout=subprocess.PIPE, universal_newlines=True, errors='ignore')
                     start_time = time.time()
@@ -152,7 +142,6 @@ with tab2:
     
     col1, col2, col3 = st.columns(3)
     with col1:
-        # Key သတ်မှတ်ထားသည်
         dl_format = st.selectbox("Format", ["mp4", "mp3"], key="dl_format")
     with col2:
         dl_resolution = st.selectbox("Resolution", ["အကောင်းဆုံး (Best)", "1080p", "720p", "480p", "360p"], key="dl_res")
@@ -161,7 +150,6 @@ with tab2:
 
     if st.button("⬇️ Download ဆွဲမည်", use_container_width=True, key="dl_btn"):
         if url:
-            # Progress ပြသရန် နေရာများ
             dl_progress_bar = st.progress(0.0)
             dl_status_text = st.empty()
             dl_status_text.info("အချက်အလက်များ ရှာဖွေနေပါသည်...")
@@ -184,7 +172,8 @@ with tab2:
                 elif d['status'] == 'finished':
                     dl_progress_bar.progress(1.0)
                     dl_status_text.warning("ဒေါင်းလုဒ်ဆွဲပြီးပါပြီ... ဖိုင်များကို ပေါင်းစပ်နေပါသည်!")
-temp_dir = tempfile.mkdtemp()
+
+            temp_dir = tempfile.mkdtemp()
             output_template = os.path.join(temp_dir, 'video_output.%(ext)s')
 
             ydl_opts = {
@@ -213,7 +202,7 @@ temp_dir = tempfile.mkdtemp()
                     height = dl_resolution.replace("p", "")
                     ydl_opts['format'] = f'best[height<={height}][ext=mp4]/best'
                 final_ext = "mp4"
-            
+
             try:
                 with yt_dlp.YoutubeDL(ydl_opts) as ydl:
                     info = ydl.extract_info(url, download=True)
