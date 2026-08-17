@@ -176,12 +176,14 @@ with tab2:
             temp_dir = tempfile.mkdtemp()
             output_template = os.path.join(temp_dir, 'video_output.%(ext)s')
 
+            # 🛡️ YouTube ၏ 403 Forbidden IP Block ကို ရှောင်ရှားရန် player-client ထည့်သွင်းထားသည်
             ydl_opts = {
                 'outtmpl': output_template,
                 'progress_hooks': [progress_hook],
                 'quiet': True,
                 'nocheckcertificate': True,
                 'geo_bypass': True,
+                'extractor-args': {'youtube': {'player-client': ['android', 'web']}},
             }
 
             if browser_choice != "မသုံးပါ (Default)":
