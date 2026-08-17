@@ -200,7 +200,7 @@ with tab2:
             if browser_choice != "မသုံးပါ (Default)":
                 ydl_opts['cookiesfrombrowser'] = (browser_choice.lower(), )
 
-            if dl_format == "mp3":
+         if dl_format == "mp3":
                 ydl_opts['format'] = 'bestaudio/best'
                 ydl_opts['postprocessors'] = [{
                     'key': 'FFmpegExtractAudio',
@@ -209,11 +209,12 @@ with tab2:
                 }]
                 final_ext = "mp3"
             else:
+                # 🛑 FFmpeg မလိုဘဲ Server ပေါ်မှာ Error မတက်အောင် ပေါင်းစပ်ပြီးသား Format ကို တိုက်ရိုက်ယူမည်
                 if dl_resolution == "အကောင်းဆုံး (Best)":
-                    ydl_opts['format'] = 'bestvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best'
+                    ydl_opts['format'] = 'best[ext=mp4]/best'
                 else:
                     height = dl_resolution.replace("p", "")
-                    ydl_opts['format'] = f'bestvideo[height<={height}][ext=mp4]+bestaudio[ext=m4a]/best[height<={height}][ext=mp4]/best'
+                    ydl_opts['format'] = f'best[height<={height}][ext=mp4]/best'
                 final_ext = "mp4"
 
             try:
