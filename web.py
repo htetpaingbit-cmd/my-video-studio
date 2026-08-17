@@ -184,13 +184,11 @@ with tab2:
                 elif d['status'] == 'finished':
                     dl_progress_bar.progress(1.0)
                     dl_status_text.warning("ဒေါင်းလုဒ်ဆွဲပြီးပါပြီ... ဖိုင်များကို ပေါင်းစပ်နေပါသည်!")
-
-            temp_dir = tempfile.mkdtemp()
+temp_dir = tempfile.mkdtemp()
             output_template = os.path.join(temp_dir, 'video_output.%(ext)s')
 
             ydl_opts = {
                 'outtmpl': output_template,
-                'ffmpeg_location': get_ffmpeg_path(),
                 'progress_hooks': [progress_hook],
                 'quiet': True,
                 'nocheckcertificate': True,
@@ -200,7 +198,7 @@ with tab2:
             if browser_choice != "မသုံးပါ (Default)":
                 ydl_opts['cookiesfrombrowser'] = (browser_choice.lower(), )
 
-         if dl_format == "mp3":
+            if dl_format == "mp3":
                 ydl_opts['format'] = 'bestaudio/best'
                 ydl_opts['postprocessors'] = [{
                     'key': 'FFmpegExtractAudio',
@@ -209,14 +207,13 @@ with tab2:
                 }]
                 final_ext = "mp3"
             else:
-                # 🛑 FFmpeg မလိုဘဲ Server ပေါ်မှာ Error မတက်အောင် ပေါင်းစပ်ပြီးသား Format ကို တိုက်ရိုက်ယူမည်
                 if dl_resolution == "အကောင်းဆုံး (Best)":
                     ydl_opts['format'] = 'best[ext=mp4]/best'
                 else:
                     height = dl_resolution.replace("p", "")
                     ydl_opts['format'] = f'best[height<={height}][ext=mp4]/best'
                 final_ext = "mp4"
-
+            
             try:
                 with yt_dlp.YoutubeDL(ydl_opts) as ydl:
                     info = ydl.extract_info(url, download=True)
