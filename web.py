@@ -5,7 +5,7 @@ import os
 import re
 import tempfile
 import time
-import imageio_ffmpeg  # <--- ဒါလေး အသစ်ထည့်ပါ
+import imageio_ffmpeg  # <--- ဒါလေး ထည့်ထားပြီးပါပြီ
 
 # ------------------------------------------------------
 # Website ရဲ့ အခြေခံ Settings များ
@@ -15,7 +15,11 @@ st.set_page_config(page_title="All-in-One Video Studio", page_icon="🎬", layou
 def get_ffmpeg_path():
     if os.path.exists('ffmpeg.exe'):
         return 'ffmpeg.exe'
-    return 'ffmpeg'
+    try:
+        # Cloud ပေါ်တွင် imageio_ffmpeg မှတစ်ဆင့် FFmpeg လမ်းကြောင်းကို ယူမည်
+        return imageio_ffmpeg.get_ffmpeg_exe()
+    except Exception:
+        return 'ffmpeg'
 
 def get_video_duration(input_file):
     try:
